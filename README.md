@@ -71,7 +71,7 @@ quantfolio-alpha-miner/
 
 ### Pandas, NumPy, Scikit-Learn, Statsmodels
 
-#### yFinance, Matplotlib
+### yFinance, Matplotlib
 
 ## 💡 Author
 
