@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 
+from .data_utils import download_close_prices
+
+
 def run_factor_analysis(tickers, start, end):
     # Download price data
     price_data = yf.download(tickers, start=start, end=end)['Adj Close']
