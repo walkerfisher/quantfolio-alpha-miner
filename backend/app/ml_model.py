@@ -1,5 +1,11 @@
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use("Agg") 
+import matplotlib.pyplot as plt
+import io
+import base64
+from fastapi.responses import StreamingResponse
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from .data_utils import download_close_prices
@@ -36,3 +42,24 @@ def predict_returns(tickers, start, end):
         "actuals": clean_actuals,
         "feature_importances": model.feature_importances_.tolist()
     }
+
+def plot_return_predictions(tickers, start, end):
+    result = predict_returns(tickers, start, end)
+
+    preds = np.array(result["predictions"])
+    actuals = np.array(result["actuals"])
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(preds, label="Predicted", linestyle="--")
+    ax.plot(actuals, label="Actual", alpha=0.7)
+    ax.set_title("Predicted vs Actual Returns")
+    ax.legend()
+    ax.grid(True)
+
+    buf = io.BytesIO()
+    plt.tight_layout()
+    plt.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+
+    return StreamingResponse(buf, media_type="image/png")
